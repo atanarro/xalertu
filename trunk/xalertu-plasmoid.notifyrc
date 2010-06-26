@@ -1,0 +1,19 @@
+[Global]
+IconName=xalertu
+Comment=xAlertU
+
+[Event/xalarmu-activated]
+Name=Alarm activated
+Comment=The alarm is activated
+Sound=/home/alvaro/c/xAlertU/sounds/arm.ogg
+Action=Sound
+
+[Event/xalarmu-deactivated] 
+Name=Alarm Deactivated 
+Sound=/home/alvaro/c/xAlertU/sounds/disarm.ogg
+Action=Sound
+
+[Event/xalarmu-firealarm]
+Name=Alarm Fired
+Sound=/home/alvaro/c/xAlertU/sounds/caralarm.ogg
+Action=Sound
