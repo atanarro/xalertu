@@ -1,0 +1,24 @@
+[Desktop Entry]
+Name=xAlertU
+Name[x-test]=xxxAlertUxx
+Comment=Plasma xAlertU
+Comment[km]=ប្លាស្មា xAlertU
+Comment[pa]=ਪਲਾਜ਼ਮਾ xAlertU
+Comment[sr]=Плазмин xAlertU
+Comment[sr@latin]=Plasmin xAlertU
+Comment[uk]=Плазма xAlertU
+Comment[x-test]=xxPlasma xAlertUxx
+Type=Service
+
+X-KDE-ServiceTypes=Plasma/Applet
+X-KDE-Library=plasma_applet_xalertu
+X-KDE-PluginInfo-Author=%{AUTHOR}
+X-KDE-PluginInfo-Email=%{EMAIL}
+X-KDE-PluginInfo-Name=xalertu
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=http://plasma.kde.org/
+X-KDE-PluginInfo-Category=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+
