@@ -40,6 +40,10 @@
 //KDE notification system
 #include <KDE/KNotification>
 
+//DBus
+#include <QDBusInterface>
+#include <QDBusReply>
+
 //Threading
 #include <qt4/Qt/qthread.h> 
 
@@ -47,9 +51,17 @@
 #include "usbpad.h"
 
 //Phonon
-// #include <KDE/Phonon/MediaObject>
+#include <Phonon/MediaObject>
+#include <Phonon/MediaSource>
+#include <Phonon/Path>
+#include <Phonon/AudioOutput>
+#include <Phonon/Global>
 
-//Configuration
+//Configuration UI
+#include "ui_xalertuConfigWebCam.h"
+#include "ui_xalertuConfigSound.h"
+#include "ui_xalertuConfigRemote.h"
+#include "ui_xalertuConfigMotionSensor.h"
 #include "ui_xalertuConfig.h"
 
 class QSizeF;
@@ -61,6 +73,7 @@ class xAlertUThread : public QThread {
     // Constructor
     xAlertUThread(const char *dev);
     virtual void run();
+//     virtual void start();
     virtual void stop();
   private:
     usbpad *motion_sensor;
@@ -75,14 +88,14 @@ class xAlertU : public Plasma::Applet
     Q_OBJECT
     Plasma::IconWidget *_pIcon;
     xAlertUThread th_motion_sensor;
+    
   public:
     // Basic Create/Destroy
     xAlertU(QObject *parent, const QVariantList &args);
     ~xAlertU();
+    
     void arm();
     void disarm();
-    //void createConfigurationInterface(KConfigDialog *parent);
-    //The paintInterface procedure paints the applet to screen
     void paintInterface(QPainter *painter,
                          const QStyleOptionGraphicsItem *option,
                          const QRect& contentsRect);
@@ -92,20 +105,39 @@ class xAlertU : public Plasma::Applet
     void fireAlarm();
     void createConfigurationInterface(KConfigDialog *parent);
     
+  private slots:
+    void aboutToFinish();
+    
   private:
     Plasma::Svg m_svg;
     KIcon m_icon;
     
-    QStringList     m_code_list;
-    
+    Phonon::MediaObject *sound_arm, *sound_disarm, *sound_fire;                    
+    Phonon::AudioOutput *audioOutput;
+			
     //Config dialog
+    Ui::xalertuConfigWebCam uiWebCam;
+    Ui::xalertuConfigSound uiSound;
+    Ui::xalertuConfigRemote uiRemote;
+    Ui::xalertuConfigMotionSensor uiMotionSensor;
     Ui::xalertuConfig ui;
     
     bool m_mouse_pressed;
     bool armed;
-    KNotification *alarm_notification;
-//     Phonon::MediaObject *media;
-    inline void readConfiguration();
+    
+    // configuration params
+    bool lock_screen;
+    
+    bool sound_enabled;
+    int sound_level;
+    
+    QString motion_sensor_device;
+    QString webcam_command;
+    
+    //KNotification *alarm_notification;
+
+    inline void readConfig();
+    inline void writeConfig();
     
   protected slots:
     void configAccepted();

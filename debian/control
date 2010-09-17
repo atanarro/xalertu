@@ -1,0 +1,13 @@
+Source: xalertu-plasmoid
+Section: kde
+Priority: extra
+Maintainer: Alvaro Tanarro <tanarro@gmail.com>
+Build-Depends: debhelper (>= 6), libplasma-dev (>= 4:4.0.80-2), libitl-dev (>= 0.6.4-1)
+Standards-Version: 3.7.3
+Homepage: http://code.google.com/p/xalertu/
+
+Package: xalertu-plasmoid
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: This is an iAlertU inspired plasmoid
+ xAlertU is an alarm system for your laptop that uses the motion sensors to trigger the alarm and the webcam to capture the image of the thief.
