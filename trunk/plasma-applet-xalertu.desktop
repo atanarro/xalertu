@@ -9,6 +9,7 @@ Comment[sr@latin]=Plasmin xAlertU
 Comment[uk]=Плазма xAlertU
 Comment[x-test]=xxPlasma xAlertUxx
 Type=Service
+Icon=xalertu
 
 X-KDE-ServiceTypes=Plasma/Applet
 X-KDE-Library=plasma_applet_xalertu
