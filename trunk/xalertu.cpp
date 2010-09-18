@@ -279,16 +279,13 @@ void xAlertU::init()
     sound_fire = Phonon::createPlayer(Phonon::NotificationCategory, 
 				      Phonon::MediaSource("/usr/share/sounds/caralarm.ogg"));
     audioOutput = new Phonon::AudioOutput(Phonon::NotificationCategory, this);
+    mediaObject = new Phonon::MediaObject(this);
 
-    Phonon::createPath(sound_arm, audioOutput);
-    Phonon::createPath(sound_disarm, audioOutput);
-    Phonon::createPath(sound_fire, audioOutput);
+    Phonon::createPath(mediaObject, audioOutput); //sound_arm
+    //Phonon::createPath(sound_disarm, audioOutput);
+    //Phonon::createPath(sound_fire, audioOutput);
     
-    //Phonon::AudioOutput ao = new Phonon::AudioOutput();
-    
-    //
-    audioOutput->setVolume(100);
-    
+    //Phonon::AudioOutput ao = new Phonon::AudioOutput();    
     connect(sound_fire, SIGNAL(aboutToFinish()), this, SLOT(aboutToFinish()));
     
 }
@@ -296,7 +293,7 @@ void xAlertU::init()
 void xAlertU::aboutToFinish()
 {
   qDebug("aboutToFinish()\n");
-  sound_fire->enqueue(Phonon::MediaSource("/home/alvaro/c/xalertu/sounds/caralarm.ogg"));
+  sound_fire->enqueue(Phonon::MediaSource("/usr/share/sounds/caralarm.ogg"));
 }
 
 
@@ -346,11 +343,13 @@ void xAlertU::createConfigurationInterface(KConfigDialog *aParent)
   ui.lockSesion->setChecked(lock_screen);
   
   uiSound.soundEnabled->setChecked(sound_enabled);
-  //uiSound.soundEnabled->addAction(uiSound.soundVolume->setEnabled(false));
   uiSound.soundVolume->setValue(sound_level);
+  uiSound.soundVolume->setDisabled(!sound_enabled);
 
   uiMotionSensor.motionsensorPath->setText(motion_sensor_device);
   uiWebCam.webcamCommand->setText(webcam_command);
+  
+  connect(uiSound.soundEnabled, SIGNAL(stateChanged(int)), this, SLOT(soundConfigChanged(int)));
   
 }
 
@@ -362,19 +361,26 @@ void xAlertU::configAccepted()
   
   sound_enabled = (uiSound.soundEnabled->checkState() == Qt::Checked);
   sound_level = uiSound.soundVolume->value();
+    
+  audioOutput->setVolume(sound_enabled);
   
   motion_sensor_device = uiMotionSensor.motionsensorPath->text();
   webcam_command = uiWebCam.webcamCommand->text();
   
-  /*
-  printf("webcamCommand: ");
-  printf("%s", uiWebCam.webcamCommand->text());
-  printf("\n");
-  */
-  
   writeConfig();
   
   update();
+}
+
+void xAlertU::soundConfigChanged(int state)
+{
+  qDebug("soundConfigChanged()\n");
+  if ( state == Qt::Checked ) {
+    uiSound.soundVolume->setDisabled(false);
+  } else {
+    uiSound.soundVolume->setDisabled(true);
+  }
+  
 }
 
 void xAlertU::readConfig()
