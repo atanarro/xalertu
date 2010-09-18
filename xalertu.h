@@ -104,7 +104,6 @@ class xAlertU : public Plasma::Applet
     void pressed();      
     void fireAlarm();
     void createConfigurationInterface(KConfigDialog *parent);
-    
   private slots:
     void aboutToFinish();
     
@@ -114,6 +113,7 @@ class xAlertU : public Plasma::Applet
     
     Phonon::MediaObject *sound_arm, *sound_disarm, *sound_fire;                    
     Phonon::AudioOutput *audioOutput;
+    Phonon::MediaObject *mediaObject;
 			
     //Config dialog
     Ui::xalertuConfigWebCam uiWebCam;
@@ -129,7 +129,7 @@ class xAlertU : public Plasma::Applet
     bool lock_screen;
     
     bool sound_enabled;
-    int sound_level;
+    qreal sound_level;
     
     QString motion_sensor_device;
     QString webcam_command;
@@ -141,6 +141,7 @@ class xAlertU : public Plasma::Applet
     
   protected slots:
     void configAccepted();
+    void soundConfigChanged(int state);
 };
 
 // This links the applet to the .desktop file
