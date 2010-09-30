@@ -20,54 +20,54 @@
 *                                                                                 *
 ***********************************************************************************/
 
-#ifndef USBPAD_H
-#define USBPAD_H
+#include "keyboardsensor.h"
 
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <KDE/Plasma/Applet>
-#include <QtGui>
 
-#include <linux/joystick.h>
-
-#define MAX_AXIS 16
-#define MAX_BUTTON 16
-
-struct padData {
-  unsigned char axisCount;
-  unsigned char buttonCount;
-  int fd;
-  int version;
-  char devName[80];
-  int aPos[MAX_AXIS];
-  int bPos[MAX_BUTTON];
-  bool changed;
-  js_event ev;
-};
-
-class usbpad : public QObject
+KeyboardSensor::KeyboardSensor()
 {
-    //Q_OBJECT
-  public:
-    // Constructor
-    usbpad(char *device, int sensitibity);
-    // Funciones miembro de la clase
-    void updateData();
-    void getData();
-    int hasChanged();
-    // Destructor
-    ~usbpad();
-  signals:
-    void Changed();
-  private:
-    // Datos miembro de la clase
-    padData pad;
-    int result;
-    int sens;
-  public:
-};
+  //TODO
+  //timerId = startTimer(50);
+}
 
-#endif
+
+KeyboardSensor::~KeyboardSensor()
+{
+  //TODO
+  //killTimer(timerId);
+}
+
+
+void KeyboardSensor::keyPressEvent(QKeyEvent * event)
+{
+  qDebug() << event->key();
+  //TODO
+}
+
+
+void KeyboardSensor::timerEvent(QTimerEvent *e)
+{
+  //TODO
+  if (e->timerId() != timerId) {
+    return;
+  }
+  
+  int absKey = 0; // QKeyEvent::count();
+  
+  if (absKey == previousKey) {
+    if (timerInterval > 300)
+      return;
+    timerInterval += 50;
+    killTimer(timerId);
+    timerId = startTimer(timerInterval);
+    return;
+  }
+  
+  if (timerInterval != 50) {
+    timerInterval = 50;
+    killTimer(timerId);
+    timerId = startTimer(timerInterval);
+  }
+  
+  qDebug()<< absKey-previousKey;
+  previousKey = absKey;
+}

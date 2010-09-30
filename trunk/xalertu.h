@@ -24,18 +24,24 @@
 //Plasma Applet headers
 #include <KDE/KIcon>
 #include <KDE/KConfigDialog>
+#include <KDE/KConfig>
+#include <KDE/KShell>
 #include <KDE/Plasma/Applet>
 #include <KDE/Plasma/Svg>
 #include <KDE/KLocale>
+#include <KDE/KProcess>
+#include <KDE/KRun>
 
 #include <plasma/widgets/iconwidget.h>
 #include <plasma/svg.h>
 #include <plasma/theme.h>
+#include <Plasma/DataEngine>
 
 #include <qt4/QtGui/QPainter>
 #include <qt4/QtGui/QFontMetrics>
 #include <qt4/QtCore/QSizeF>
 #include <QtGui>
+#include <QDirModel>
 
 //KDE notification system
 #include <KDE/KNotification>
@@ -49,6 +55,10 @@
 
 //Motion sensor
 #include "usbpad.h"
+//Mouse Sensor
+#include "mousesensor.h"
+//Keyboard Sensor
+#include "keyboardsensor.h"
 
 //Phonon
 #include <Phonon/MediaObject>
@@ -59,29 +69,35 @@
 
 //Configuration UI
 #include "ui_xalertuConfigWebCam.h"
+#include "ui_xalertuConfigScreenshot.h"
 #include "ui_xalertuConfigSound.h"
 #include "ui_xalertuConfigRemote.h"
 #include "ui_xalertuConfigMotionSensor.h"
+#include "ui_xalertuConfigEmail.h"
 #include "ui_xalertuConfig.h"
 
 class QSizeF;
 class QGraphicsSceneMouseEvent;
+
 
 class xAlertUThread : public QThread {
   Q_OBJECT
   public:
     // Constructor
     xAlertUThread(const char *dev);
+    void setDevice(const char *dev);
+    void setSensibility(int s);
     virtual void run();
-//     virtual void start();
     virtual void stop();
   private:
     usbpad *motion_sensor;
     bool stop_flag;
-    const char *device;
+    char device[256];
+    int sensibility;
   signals:
     void fire( void );
 };
+
 
 class xAlertU : public Plasma::Applet
 {
@@ -104,6 +120,10 @@ class xAlertU : public Plasma::Applet
     void pressed();      
     void fireAlarm();
     void createConfigurationInterface(KConfigDialog *parent);
+    
+  public Q_SLOTS:
+    void dataUpdated(const QString &name, const Plasma::DataEngine::Data &data);
+    
   private slots:
     void aboutToFinish();
     
@@ -117,31 +137,88 @@ class xAlertU : public Plasma::Applet
 			
     //Config dialog
     Ui::xalertuConfigWebCam uiWebCam;
+    Ui::xalertuConfigScreenshot uiScreenshot;
     Ui::xalertuConfigSound uiSound;
     Ui::xalertuConfigRemote uiRemote;
+    Ui::xalertuConfigEmail uiEmail;
     Ui::xalertuConfigMotionSensor uiMotionSensor;
     Ui::xalertuConfig ui;
     
     bool m_mouse_pressed;
     bool armed;
+    bool ac_plugged;
+    qint8 ac_cont;
+    qreal alarm_counter;
+    
+    KProcess m_proc;
+    
+    KProcess m_procWC;
+    KProcess m_procSC;
+    KProcess m_procMail;
+    
+    MouseSensor *mouse_sensor;
+    KeyboardSensor *keyboard_sensor;
     
     // configuration params
     bool lock_screen;
+    bool activate_motion_sensor;
+    bool activate_mouse_sensor;
+    bool activate_keyboard_sensor;
+    bool activate_ac_sensor;
     
     bool sound_enabled;
     qreal sound_level;
+    bool alarm_loop;
+    qreal alarm_duration;
+    
+    QString last_armed;
+    QString last_send;
+    QString last_activation;
+    QString type;
+    quint32 times_activated;
     
     QString motion_sensor_device;
+    int motion_sensor_sensibility;
+    
     QString webcam_command;
+    QString webcam_input;
+    QString webcam_size;
+    QString webcam_format;
+    QString webcam_dir;
+    
+    QString screenshot_command;
+    QString screenshot_input;
+    QString screenshot_size;
+    QString screenshot_format;
+    QString screenshot_dir;
+    
+    QString mailto;
+    bool email_alarms;
+    bool attach_screenshot;
+    bool attach_webcam_image;
     
     //KNotification *alarm_notification;
-
+    
     inline void readConfig();
     inline void writeConfig();
     
   protected slots:
     void configAccepted();
-    void soundConfigChanged(int state);
+    void configDiscarded();
+    void soundEnabledConfigChanged(int state);
+    void alarmLoopConfigChanged(int state);
+    void emailConfigChanged(int state);
+    void emailConfigTestButtonPressed();
+    void screenshotConfigTestButtonPressed();
+    void screenshotConfigChanged();
+    void webCamConfigTestButtonPressed();
+    void webCamConfigChanged();
+    void setImageWC();
+    void setImageSC();
+    void runWebCamCommand();
+    void runScreenshotCommand();
+    void runEmailCommand();
+    void disconnectSecuence();
 };
 
 // This links the applet to the .desktop file

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Remote</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -37,7 +37,10 @@ p, li { white-space: pre-wrap; }
      <item row="0" column="1">
       <widget class="KLineEdit" name="klineedit_3">
        <property name="text">
-        <string>nuse</string>
+        <string/>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

@@ -20,54 +20,30 @@
 *                                                                                 *
 ***********************************************************************************/
 
-#ifndef USBPAD_H
-#define USBPAD_H
+#ifndef KEYBOARDSENSOR_H
+#define KEYBOARDSENSOR_H
 
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
 #include <KDE/Plasma/Applet>
+
 #include <QtGui>
 
-#include <linux/joystick.h>
-
-#define MAX_AXIS 16
-#define MAX_BUTTON 16
-
-struct padData {
-  unsigned char axisCount;
-  unsigned char buttonCount;
-  int fd;
-  int version;
-  char devName[80];
-  int aPos[MAX_AXIS];
-  int bPos[MAX_BUTTON];
-  bool changed;
-  js_event ev;
-};
-
-class usbpad : public QObject
+class KeyboardSensor : public QObject
 {
-    //Q_OBJECT
   public:
     // Constructor
-    usbpad(char *device, int sensitibity);
-    // Funciones miembro de la clase
-    void updateData();
-    void getData();
-    int hasChanged();
+    KeyboardSensor();
     // Destructor
-    ~usbpad();
+    ~KeyboardSensor();
+    
   signals:
     void Changed();
   private:
-    // Datos miembro de la clase
-    padData pad;
-    int result;
-    int sens;
-  public:
+    int timerInterval;
+    int timerId;
+    int previousKey;
+    
+    void keyPressEvent(QKeyEvent * event);
+    void timerEvent(QTimerEvent *e);
 };
 
-#endif
+#endif // MOUSESENSOR_H
