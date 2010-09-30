@@ -20,54 +20,51 @@
 *                                                                                 *
 ***********************************************************************************/
 
-#ifndef USBPAD_H
-#define USBPAD_H
+#include "mousesensor.h"
 
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <KDE/Plasma/Applet>
-#include <QtGui>
-
-#include <linux/joystick.h>
-
-#define MAX_AXIS 16
-#define MAX_BUTTON 16
-
-struct padData {
-  unsigned char axisCount;
-  unsigned char buttonCount;
-  int fd;
-  int version;
-  char devName[80];
-  int aPos[MAX_AXIS];
-  int bPos[MAX_BUTTON];
-  bool changed;
-  js_event ev;
-};
-
-class usbpad : public QObject
+MouseSensor::MouseSensor()
 {
-    //Q_OBJECT
-  public:
-    // Constructor
-    usbpad(char *device, int sensitibity);
-    // Funciones miembro de la clase
-    void updateData();
-    void getData();
-    int hasChanged();
-    // Destructor
-    ~usbpad();
-  signals:
-    void Changed();
-  private:
-    // Datos miembro de la clase
-    padData pad;
-    int result;
-    int sens;
-  public:
-};
+  timerId = startTimer(50);
+  cont = 1;
+}
 
-#endif
+
+MouseSensor::~MouseSensor()
+{
+  killTimer(timerId);
+}
+
+
+void MouseSensor::timerEvent(QTimerEvent *e)
+{
+  if (e->timerId() != timerId) {
+    return;
+  }
+  
+  QPoint absMousePos = QCursor::pos();
+  
+  if (absMousePos == previousMousePos) {
+    if (timerInterval > 300)
+      return;
+    timerInterval += 50;
+    killTimer(timerId);
+    timerId = startTimer(timerInterval);
+    return;
+  }
+  
+  if (timerInterval != 50) {
+    timerInterval = 50;
+    killTimer(timerId);
+    timerId = startTimer(timerInterval);
+  }
+  if (cont--==0)
+  {
+    cont=-1;
+    qDebug()<< "fire?"<< absMousePos-previousMousePos;
+    
+    // Fire notification
+    emit fire();
+  }
+  
+  previousMousePos = absMousePos;
+}
