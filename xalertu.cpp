@@ -241,6 +241,8 @@ void xAlertU::fireAlarm() {
   runWebCamCommand();
   
   if (sound_enabled) {
+    //Set Mute off and volume level
+    setVolume();
     alarm_counter = 1;
     sound_disarm->stop();
     sound_arm->stop();
@@ -369,6 +371,29 @@ void xAlertU::pressed()
 }
 
 
+void setVolume()
+{
+  //open DBus interface
+  QDBusInterface dBusIf("org.kde.kmix", "/Mixer0", "");
+  if (!dBusIf.isValid())  {
+    qDebug("cannot open dbus interface\n");
+  } else {
+    // call setMute method
+    QDBusReply<void> dBusReply = dBusIf.call("setMute", "Master:0", false);
+    if ( !dBusReply.isValid() )  {
+      qDebug("error %s : %s\n", dBusReply.error().name().toAscii().data(), 
+             dBusReply.error().message().toAscii().data() );
+    }
+    // call setVolume method
+    dBusReply = dBusIf.call("setVolume", "Master:0", sound_level);
+    if ( !dBusReply.isValid() )  {
+      qDebug("error %s : %s\n", dBusReply.error().name().toAscii().data(), 
+             dBusReply.error().message().toAscii().data() );
+    }
+  }
+}
+
+
 void xAlertU::init()
 {
     // A small demonstration of the setFailedToLaunch function
@@ -398,9 +423,9 @@ void xAlertU::init()
                                         Phonon::MediaSource("/usr/share/sounds/disarm.ogg"));
     sound_fire = Phonon::createPlayer(Phonon::NotificationCategory, 
                                       Phonon::MediaSource("/usr/share/sounds/caralarm.ogg"));
-    audioOutput = new Phonon::AudioOutput(Phonon::NotificationCategory, this);
+    //audioOutput = new Phonon::AudioOutput(Phonon::NotificationCategory, this);
 
-    Phonon::createPath(sound_arm, audioOutput); //sound_arm
+    //Phonon::createPath(sound_arm, audioOutput); //sound_arm
     //Phonon::createPath(sound_disarm, audioOutput);
     //Phonon::createPath(sound_fire, audioOutput);
     
@@ -458,6 +483,7 @@ void xAlertU::aboutToFinish()
   qDebug("aboutToFinish()\n");
   if (alarm_loop || alarm_counter++ < alarm_duration)
   {
+    setVolume();
     sound_fire->enqueue(Phonon::MediaSource("/usr/share/sounds/caralarm.ogg"));
   }
 }
@@ -592,7 +618,7 @@ void xAlertU::configAccepted()
   alarm_loop = (uiSound.alarmLoop->checkState() == Qt::Checked);
   alarm_duration = uiSound.alarmDuration->value();
     
-  audioOutput->setVolume(sound_level);
+  //audioOutput->setVolume(sound_level);
   
   motion_sensor_device = uiMotionSensor.motionsensorPath->text();
   motion_sensor_sensibility = uiMotionSensor.accelerometerSensivity->value();

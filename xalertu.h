@@ -27,13 +27,13 @@
 #include <KDE/KConfig>
 #include <KDE/KShell>
 #include <KDE/Plasma/Applet>
-#include <KDE/Plasma/Svg>
+//#include <KDE/Plasma/Svg>
 #include <KDE/KLocale>
 #include <KDE/KProcess>
 #include <KDE/KRun>
 
 #include <plasma/widgets/iconwidget.h>
-#include <plasma/svg.h>
+// #include <plasma/svg.h>
 #include <plasma/theme.h>
 #include <Plasma/DataEngine>
 
@@ -201,6 +201,7 @@ class xAlertU : public Plasma::Applet
     
     inline void readConfig();
     inline void writeConfig();
+    void setVolume();
     
   protected slots:
     void configAccepted();

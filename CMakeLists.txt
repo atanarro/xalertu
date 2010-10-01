@@ -36,8 +36,8 @@ kde4_add_ui_files(xalertu_SRCS form/xalertuConfigWebCam.ui
 # Now make sure all files get to the right place
 kde4_add_plugin(plasma_applet_xalertu ${xalertu_SRCS})
 
-target_link_libraries(plasma_applet_xalertu phonon kdeui solidcontrol
-                      ${KDE4_SOLID_LIBS} 
+target_link_libraries(plasma_applet_xalertu phonon kdeui #solidcontrol
+                      #${KDE4_SOLID_LIBS} 
                       ${KDE4_PLASMA_LIBS}
                       ${KDE4_KDEUI_LIBS}
                       ${KDE4_KIO_LIBS})
