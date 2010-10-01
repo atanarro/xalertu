@@ -371,7 +371,7 @@ void xAlertU::pressed()
 }
 
 
-void setVolume()
+void xAlertU::setVolume()
 {
   //open DBus interface
   QDBusInterface dBusIf("org.kde.kmix", "/Mixer0", "");
