@@ -55,7 +55,7 @@
      <item row="2" column="2">
       <widget class="QComboBox" name="comboSize">
        <property name="currentIndex">
-        <number>5</number>
+        <number>0</number>
        </property>
        <item>
         <property name="text">
@@ -84,6 +84,11 @@
        </item>
        <item>
         <property name="text">
+         <string>1280x800</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>1280x1024</string>
         </property>
        </item>
@@ -100,6 +105,11 @@
        <item>
         <property name="text">
          <string>1600x1200</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>1680x1050</string>
         </property>
        </item>
        <item>
