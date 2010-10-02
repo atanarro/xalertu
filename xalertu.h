@@ -37,9 +37,9 @@
 #include <plasma/theme.h>
 #include <Plasma/DataEngine>
 
-#include <qt4/QtGui/QPainter>
-#include <qt4/QtGui/QFontMetrics>
-#include <qt4/QtCore/QSizeF>
+#include <QtGui/QPainter>
+#include <QtGui/QFontMetrics>
+#include <QtCore/QSizeF>
 #include <QtGui>
 #include <QDirModel>
 
