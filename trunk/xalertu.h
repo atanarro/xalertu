@@ -51,7 +51,7 @@
 #include <QDBusReply>
 
 //Threading
-#include <qt4/Qt/qthread.h> 
+#include <Qt/qthread.h>
 
 //Motion sensor
 #include "usbpad.h"
