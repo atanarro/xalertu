@@ -418,11 +418,11 @@ void xAlertU::init()
     connect(&th_motion_sensor, SIGNAL(fire()), this, SLOT(fireAlarm()));
     
     sound_arm = Phonon::createPlayer(Phonon::NotificationCategory, 
-                                     Phonon::MediaSource("/usr/share/sounds/arm.ogg"));    
+                                     Phonon::MediaSource(QUrl::fromLocalFile("/usr/share/sounds/arm.ogg")));
     sound_disarm = Phonon::createPlayer(Phonon::NotificationCategory, 
-                                        Phonon::MediaSource("/usr/share/sounds/disarm.ogg"));
+                                        Phonon::MediaSource(QUrl::fromLocalFile("/usr/share/sounds/disarm.ogg")));
     sound_fire = Phonon::createPlayer(Phonon::NotificationCategory, 
-                                      Phonon::MediaSource("/usr/share/sounds/caralarm.ogg"));
+                                      Phonon::MediaSource(QUrl::fromLocalFile("/usr/share/sounds/caralarm.ogg")));
     //audioOutput = new Phonon::AudioOutput(Phonon::NotificationCategory, this);
 
     //Phonon::createPath(sound_arm, audioOutput); //sound_arm
@@ -484,7 +484,7 @@ void xAlertU::aboutToFinish()
   if (alarm_loop || alarm_counter++ < alarm_duration)
   {
     setVolume();
-    sound_fire->enqueue(Phonon::MediaSource("/usr/share/sounds/caralarm.ogg"));
+    sound_fire->enqueue(Phonon::MediaSource(QUrl::fromLocalFile("/usr/share/sounds/caralarm.ogg")));
   }
 }
 
